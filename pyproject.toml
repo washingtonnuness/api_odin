@@ -41,9 +41,9 @@ httpx = "^0.27.0"
 [tool.taskipy.tasks]
 lint = 'ruff check . && ruff check . --diff'
 format = 'ruff check . --fix && ruff format .'
-run = 'fastapi dev fast_zero/app.py'
+run = 'fastapi dev api_odin/app.py'
 pre_test = 'task lint'
-test = 'pytest -s -x --cov=fast_zero -vv'
+test = 'pytest -s -x --cov=api_odin -vv'
 post_test = 'coverage html'
 
 [tool.ruff]
