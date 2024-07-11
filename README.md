@@ -201,7 +201,7 @@ pyproject.toml
 [tool.taskipy.tasks]
 lint = 'ruff check . && ruff check . --diff'
 format = 'ruff check . --fix && ruff format .'
-run = 'fastapi dev api_odin/app.py'
+run = 'fastapi dev server/app.py'
 pre_test = 'task lint'
 test = 'pytest -s -x --cov=api_odin -vv'
 post_test = 'coverage html'
@@ -279,8 +279,8 @@ collected 0 items
 ---------- coverage: platform linux, python 3.11.7-final-0 -----------
 Name                    Stmts   Miss  Cover
 -------------------------------------------
-api_odin/__init__.py       0      0   100%
-api_odin/app.py            5      5     0%
+server/__init__.py       0      0   100%
+server/app.py            5      5     0%
 -------------------------------------------
 TOTAL                       5      5     0%
 As linhas no terminal são referentes ao pytest, que disse que coletou 0 itens. Nenhum teste foi executado.
