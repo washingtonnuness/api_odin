@@ -26,28 +26,36 @@ Responde após validar os dados na classe UserSchema com modelo UserPublic
 @app.post('/users/', status_code=HTTPStatus.CREATED, response_model=UserPublic)
 def create_user(user: UserSchema):
     engine = create_engine(Settings().DATABASE_URL)
-    session = Session(engine)
-    db_user = session.scalar(
-        select(User).where(
-            (User.username == user.username) | (User.email == user.email)
+    
+    with Session(engine) as session:
+        db_user = session.scalar(
+            select(User).where(
+                (User.username == user.username) | (User.email == user.email)
+            )
         )
-    )
 
-    if db_user:
-        if db_user.username == user.username:
+        if db_user:
+            if db_user.username == user.username:
+                raise HTTPException(
+                    status_code=HTTPStatus.BAD_REQUEST,
+                    detail='Username already exists',
+                )
+            elif db_user.email == user.email:
+                raise HTTPException(
+                    status_code=HTTPStatus.BAD_REQUEST,
+                    detail='Email already exists',
+                )
+        
+        if user.username.find(' '):
             raise HTTPException(
                 status_code=HTTPStatus.BAD_REQUEST,
-                detail='Username already exists',
-            )
-        elif db_user.email == user.email:
-            raise HTTPException(
-                status_code=HTTPStatus.BAD_REQUEST,
-                detail='Email already exists',
-            )
-
+                detail='Invalid Username',
+            )           
+    
     db_user = User(
         username=user.username, password=user.password, email=user.email
     )
+    #breakpoint()
 
     session.add(db_user)
     session.commit()
