@@ -13,7 +13,7 @@ from api_odin.database import get_session
 from api_odin.models import User
 from api_odin.schemas import TokenData
 
-SECRET_KEY = 'senha'  # Isso é provisório
+SECRET_KEY = 'minha_senha'  # Isso é provisório
 ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 pwd_context = PasswordHash.recommended()
@@ -41,11 +41,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 
 async def get_current_user(
-        
     session: Session = Depends(get_session),
     token: str = Depends(oauth2_scheme),
 ):
-    breakpoint()
     credentials_exception = HTTPException(
         status_code=HTTPStatus.UNAUTHORIZED,
         detail='Could not validate credentials',
@@ -58,12 +56,11 @@ async def get_current_user(
         if not username:
             raise credentials_exception
         token_data = TokenData(username=username)
-        
     except DecodeError:
         raise credentials_exception
 
     user = session.scalar(
-        select(User).where(User.username == token_data.username)
+        select(User).where(User.email == token_data.username)
     )
 
     if user is None:
